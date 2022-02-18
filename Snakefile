@@ -79,6 +79,13 @@ else:
     paired_string = ''
 sample_names = sample_reads.keys()
 
+# does the user want distinct minimizer count info reported in the results?
+minimizer = config['report_minimizer_data']
+if minimizer:
+    minimizer_string = '--report-minimizer-data'
+else:
+    paired_string = ''
+
 # also read in desired confidence threshold for Kraken
 if not 'confidence_threshold' in config:
     config['confidence_threshold'] = 0.0
@@ -182,7 +189,8 @@ rule kraken:
     params:
         db = config['database'],
         paired_string = paired_string,
-        confidence_threshold = confidence_threshold
+        confidence_threshold = confidence_threshold,
+        minimizer_string = minimizer_string
     threads: kraken_threads
     resources:
         mem=kraken_memory,
@@ -191,7 +199,7 @@ rule kraken:
     # singularity: "docker://quay.io/biocontainers/kraken2:2.0.9beta--pl526hc9558a2_0"
     shell: """
         time kraken2 --db {params.db} --threads {threads} --output {output.krak} \
-        --report {output.krak_report} {params.paired_string} {input.reads} \
+        --report {output.krak_report} {params.minimizer_string} {params.paired_string} {input.reads} \
         --confidence {params.confidence_threshold} --use-names
         """
 
