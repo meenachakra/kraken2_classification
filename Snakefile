@@ -84,7 +84,7 @@ minimizer = config['report_minimizer_data']
 if minimizer:
     minimizer_string = '--report-minimizer-data'
 else:
-    paired_string = ''
+    minimizer_string = ''
 
 # also read in desired confidence threshold for Kraken
 if not 'confidence_threshold' in config:
